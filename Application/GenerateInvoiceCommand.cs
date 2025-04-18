@@ -1,7 +1,8 @@
 
+using Domain;
+
 namespace Application;
 
-using Domain;
 
 public class GenerateInvoiceCommand
 {

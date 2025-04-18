@@ -9,5 +9,5 @@ public class Invoice
 
 public interface IPdfGenerator
 {
-    byte[] GenerateInvoice(string title, string content);
+    byte[] GenerateInvoice(string customerName, string product);
 }

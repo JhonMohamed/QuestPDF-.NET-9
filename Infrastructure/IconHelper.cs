@@ -1,45 +1,27 @@
-﻿using SkiaSharp;
-using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System;
 using System.IO;
+using System.Linq;
 using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Infrastructure
 {
     public static class IconHelper
     {
-        public static byte[] LoadSvgAsPng(string path, int width = 64, int height = 64)
+        /// <summary>
+        /// Lee un SVG incrustado y devuelve su contenido XML como string.
+        /// </summary>
+        public static string LoadSvgContent(string iconName)
         {
-            if (!File.Exists(path))
-                throw new FileNotFoundException($"El archivo SVG no se encuentra en la ruta {path}");
+            var asm = Assembly.GetExecutingAssembly();
+            var resourceName = asm.GetManifestResourceNames()
+                .FirstOrDefault(x => x.EndsWith($".Icons.{iconName}.svg", StringComparison.OrdinalIgnoreCase));
 
-            var svg = new SKSvg();
-            using var stream = File.OpenRead(path);
+            if (resourceName == null)
+                throw new FileNotFoundException($"No se encontró el recurso incrustado: {iconName}.svg");
 
-            svg.Load(stream);
-
-            var picture = svg.Picture;
-            if (picture == null)
-                throw new Exception("No se pudo cargar la imagen SVG.");
-
-            using var bitmap = new SKBitmap(width, height);
-            using var canvas = new SKCanvas(bitmap);
-
-            canvas.Clear(SKColors.Transparent);
-            float scaleX = width / picture.CullRect.Width;
-            float scaleY = height / picture.CullRect.Height;
-            canvas.Scale(scaleX, scaleY);
-
-            canvas.DrawPicture(picture);
-            canvas.Flush();
-
-            using var image = SKImage.FromBitmap(bitmap);
-            using var data = image.Encode(SKEncodedImageFormat.Png, 100);
-
-            return data.ToArray();
+            using var stream = asm.GetManifestResourceStream(resourceName)!;
+            using var reader = new StreamReader(stream);
+            return reader.ReadToEnd();
         }
     }
 }
