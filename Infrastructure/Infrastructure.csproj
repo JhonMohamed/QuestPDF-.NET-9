@@ -5,9 +5,14 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
   </PropertyGroup>
-
+	<ItemGroup>
+		<EmbeddedResource Include="Icons\*.svg" />
+	</ItemGroup>
   <ItemGroup>
     <PackageReference Include="QuestPDF" Version="2025.4.0" />
+	  <PackageReference Include="SkiaSharp" Version="3.116.0.0" />
+    <PackageReference Include="SkiaSharp.NativeAssets.Win32" Version="3.116.1" />
+    <PackageReference Include="SkiaSharp.Svg" Version="1.60.0" />
   </ItemGroup>
 
   <ItemGroup>
