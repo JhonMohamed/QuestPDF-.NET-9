@@ -1,24 +1,13 @@
 using Infrastructure;
 using Infrastructure.Data;
 using Application;
-using Domain;
 using Domain.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 
-
-
-//var builder = WebApplication.CreateBuilder(args);
-//var connectionString = builder.Configuration.GetConnectionString("cnx");
-
-//builder.Services.AddDbContext<ApplicationDbContext>(options =>
-//    options.UseSqlServer(connectionString, sqlOptions =>
-//        sqlOptions.MigrationsAssembly("Infrastructure")));
-
-
 var builder = WebApplication.CreateBuilder(args);
 
-// Obtener la cadena de conexión desde la configuración
+// Configurar la cadena de conexión
 var connectionString = builder.Configuration.GetConnectionString("cnx");
 
 // Configurar ApplicationDbContext con el ensamblaje de migraciones
@@ -26,9 +15,10 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(connectionString, sqlOptions =>
         sqlOptions.MigrationsAssembly("Infrastructure")));
 
-// Inyectar dependencias
+// Registrar servicios e interfaces necesarias
+builder.Services.AddScoped<IInvoiceService, InvoiceService>();
 builder.Services.AddScoped<IPdfGenerator, PdfGenerator>();
-builder.Services.AddScoped<GenerateInvoiceCommand>();
+builder.Services.AddScoped<IGenerateInvoiceCommand, GenerateInvoiceCommand>();
 
 // Configuración estándar
 builder.Services.AddControllers();

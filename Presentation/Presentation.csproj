@@ -5,7 +5,9 @@
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
   </PropertyGroup>
-
+	<ItemGroup>
+		<EmbeddedResource Include="Icons\*.svg" />
+	</ItemGroup>
   <ItemGroup>
     <PackageReference Include="DotSwashbuckle.AspNetCore" Version="3.0.11" />
     <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="9.0.4" />

@@ -8,6 +8,6 @@ namespace Domain.Interfaces
 {
     public interface IPdfGenerator
     {
-        byte[] GenerateInvoice(string customerName, string product);
+        byte[] GenerateInvoiceReport(List<Invoice> invoices);
     }
 }

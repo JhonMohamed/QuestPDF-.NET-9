@@ -1,21 +1,32 @@
 
 using Domain;
 using Domain.Interfaces;
+using Infrastructure;
 
 namespace Application;
 
 
-public class GenerateInvoiceCommand
+public interface IGenerateInvoiceCommand
 {
-    private readonly IPdfGenerator _pdfGenerator;
+    Task<byte[]> ExecuteAsync();
+}
 
-    public GenerateInvoiceCommand(IPdfGenerator pdfGenerator)
+public class GenerateInvoiceCommand : IGenerateInvoiceCommand
+{
+    private readonly IInvoiceService _service;
+    private readonly IPdfGenerator _pdfGen;
+
+    public GenerateInvoiceCommand(
+        IInvoiceService service,
+        IPdfGenerator pdfGen)
     {
-        _pdfGenerator = pdfGenerator;
+        _service = service;
+        _pdfGen = pdfGen;
     }
 
-    public byte[] Execute(string title, string content)
-    { 
-        return _pdfGenerator.GenerateInvoice(title, content);
+    public async Task<byte[]> ExecuteAsync()
+    {
+        List<Domain.Invoice> invoices = await _service.ObtenerFacturasAsync();
+        return _pdfGen.GenerateInvoiceReport(invoices);
     }
 }

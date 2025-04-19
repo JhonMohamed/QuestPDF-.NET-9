@@ -8,18 +8,15 @@ using Application;
 [Route("api/[controller]")]
 public class ReportController : ControllerBase
 {
-    private readonly GenerateInvoiceCommand _generateInvoiceCommand;
+    private readonly IGenerateInvoiceCommand _cmd;
 
-    public ReportController(GenerateInvoiceCommand generateInvoiceCommand)
-    {
-        _generateInvoiceCommand = generateInvoiceCommand;
-    }
+    public ReportController(IGenerateInvoiceCommand cmd)
+        => _cmd = cmd;
 
     [HttpGet("generate")]
-    public IActionResult Generate()
+    public async Task<IActionResult> Generate()
     {
-        var pdfBytes = _generateInvoiceCommand.Execute("Factura", "Este es un ejemplo de PDF con QuestPDF");
-        return File(pdfBytes, "application/pdf", "Factura.pdf");
+        byte[] pdf = await _cmd.ExecuteAsync();
+        return File(pdf, "application/pdf", "ReporteFacturas.pdf");
     }
-
 }

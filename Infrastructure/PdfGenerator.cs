@@ -7,18 +7,16 @@ using System;
 
 namespace Infrastructure
 {
-    public class PdfGenerator : IPdfGenerator 
+    public class PdfGenerator : IPdfGenerator
     {
-        public byte[] GenerateInvoice(string customerName, string product)
+        public byte[] GenerateInvoiceReport(List<Invoice> invoices)
         {
-            // 1. Obtén el SVG como contenido
+            // Carga SVG directamente de archivo (asegúrate de copiar a output)
             var svgContent = IconHelper.LoadSvgContent("game");
 
-            // 2. Configura licencia (Community por defecto)
             QuestPDF.Settings.License = LicenseType.Community;
 
-            // 3. Crea el documento
-            var document = Document.Create(container =>
+            var doc = Document.Create(container =>
             {
                 container.Page(page =>
                 {
@@ -26,68 +24,55 @@ namespace Infrastructure
                     page.Size(PageSizes.A4);
                     page.DefaultTextStyle(x => x.FontSize(12));
 
-                    // Header con SVG insertado
-                    page.Header().Row(row =>
+                    // Header con título y SVG
+                    page.Header().Row(r =>
                     {
-                        row.RelativeItem().Column(col =>
-                        {
-                            col.Item().Text("Neon Nova")
-                                .FontSize(20).SemiBold().FontColor(Colors.Blue.Medium);
-                            col.Item().Text("Recibo de Compra")
-                                .FontSize(14).FontColor(Colors.Grey.Medium);
-                        });
-
-                        row.ConstantItem(60)
-                           .Height(60)
-                           .Svg(svgContent)
-                          ;  // ¡SVG directo como vector!
+                        r.RelativeItem().Text("Reporte de Facturas")
+                            .FontSize(20).SemiBold().FontColor(Colors.Blue.Medium);
+                        r.ConstantItem(60).Height(60).Svg(svgContent);
                     });
 
-                    // Cuerpo del recibo
-                    page.Content().PaddingVertical(20).Column(col =>
+                    // Tabla de facturas
+                    page.Content().Table(table =>
                     {
-                        col.Spacing(10);
-
-                        col.Item().Row(r =>
+                        table.ColumnsDefinition(cols =>
                         {
-                            r.RelativeItem().Text($"Cliente: {customerName}");
-                            r.RelativeItem().AlignRight().Text($"Fecha: {DateTime.Now:dd/MM/yyyy}");
+                            cols.ConstantColumn(40);
+                            cols.RelativeColumn();
+                            cols.RelativeColumn();
+                            cols.ConstantColumn(80);
                         });
 
-                        col.Item().LineHorizontal(1).LineColor(Colors.Grey.Lighten2);
-
-                        col.Item().Table(table =>
+                        // Cabecera
+                        table.Header(h =>
                         {
-                            table.ColumnsDefinition(c =>
-                            {
-                                c.RelativeColumn(3);
-                                c.ConstantColumn(80);
-                            });
-
-                            table.Header(h =>
-                            {
-                                h.Cell().Text("Descripción").SemiBold();
-                                h.Cell().AlignRight().Text("Total").SemiBold();
-                            });
-
-                            table.Cell().Text(product);
-                            table.Cell().AlignRight().Text("$99.99");
+                            h.Cell().Text("ID").SemiBold();
+                            h.Cell().Text("Título").SemiBold();
+                            h.Cell().Text("Contenido").SemiBold();
+                            h.Cell().AlignRight().Text("Fecha").SemiBold();
                         });
+
+                        // Filas
+                        foreach (var inv in invoices)
+                        {
+                            table.Cell().Text(inv.Id.ToString());
+                            table.Cell().Text(inv.Title);
+                            table.Cell().Text(inv.Content);
+                            table.Cell().AlignRight()
+                                 .Text(inv.CreatedAt.ToString("dd/MM/yyyy"));
+                        }
                     });
 
                     // Footer
                     page.Footer().AlignCenter().Text(t =>
                     {
-                        t.Span("¡Gracias por su compra!")
-                         .FontSize(10)
-                         .FontColor(Colors.Grey.Medium)
-                         .Italic();
+                        t.Span("Generado el ");
+                        t.Span(DateTime.Now.ToString("dd/MM/yyyy")).SemiBold();
                     });
                 });
             });
 
-            // 4. Genera el PDF en memoria
-            return document.GeneratePdf();
+            return doc.GeneratePdf();
         }
     }
 }
