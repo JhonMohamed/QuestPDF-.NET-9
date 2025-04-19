@@ -9,12 +9,12 @@
 		<EmbeddedResource Include="Icons\*.svg" />
 	</ItemGroup>
 	<ItemGroup>
-		<None Include="..\Infrastructure\Icons\*.svg">
-			<Link>Icons\%(Filename)%(Extension)</Link>
-			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-		</None>
-	</ItemGroup>
-	<ItemGroup>
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="9.0.4" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="9.0.4" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="9.0.4">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
     <PackageReference Include="QuestPDF" Version="2025.4.0" />
 	  <PackageReference Include="SkiaSharp" Version="3.116.0.0" />
     <PackageReference Include="SkiaSharp.NativeAssets.Win32" Version="3.116.1" />

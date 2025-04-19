@@ -1,4 +1,5 @@
 using Domain;
+using Domain.Interfaces;
 using QuestPDF.Fluent;
 using QuestPDF.Helpers;
 using QuestPDF.Infrastructure;
@@ -6,7 +7,7 @@ using System;
 
 namespace Infrastructure
 {
-    public class PdfGenerator : IPdfGenerator
+    public class PdfGenerator : IPdfGenerator 
     {
         public byte[] GenerateInvoice(string customerName, string product)
         {

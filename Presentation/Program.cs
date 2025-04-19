@@ -1,4 +1,4 @@
-锘縰sing Infrastructure;
+using Infrastructure;
 using Infrastructure.Data;
 using Application;
 using Domain;
@@ -18,7 +18,7 @@ using Microsoft.OpenApi.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Obtener la cadena de conexi贸n desde la configuraci贸n
+// Obtener la cadena de conexi髇 desde la configuraci髇
 var connectionString = builder.Configuration.GetConnectionString("cnx");
 
 // Configurar ApplicationDbContext con el ensamblaje de migraciones
@@ -30,14 +30,14 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 builder.Services.AddScoped<IPdfGenerator, PdfGenerator>();
 builder.Services.AddScoped<GenerateInvoiceCommand>();
 
-// Configuraci贸n est谩ndar
+// Configuraci髇 est醤dar
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
 
-// Aplicar migraciones al iniciar la aplicaci贸n
+// Aplicar migraciones al iniciar la aplicaci髇
 using (var scope = app.Services.CreateScope())
 {
     var dbContext = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
